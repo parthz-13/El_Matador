@@ -438,6 +438,9 @@ class CredibilityAnalyzer:
             - suspicious_claims: list[str]
             - recommended_action: str
             - explanation: str
+            - model_prediction: int (0 for fake, 1 for real)
+            - pattern_score: float (0.0-1.0)
+            - patterns: dict (pattern detection results)
         """
         from pattern_detector import PatternDetector
         from emotional_analyzer import EmotionalAnalyzer
@@ -577,7 +580,10 @@ class CredibilityAnalyzer:
             "emotional_tone": emotional_tone,
             "suspicious_claims": suspicious_claims,
             "recommended_action": recommended_action,
-            "explanation": explanation
+            "explanation": explanation,
+            "model_prediction": model_prediction,
+            "pattern_score": pattern_score,
+            "patterns": detected_patterns
         }
 
     def format_json_output(self, analysis_result: Dict[str, Any]) -> Dict[str, Any]:

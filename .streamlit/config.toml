@@ -1,0 +1,17 @@
+[theme]
+# Professional color scheme for research-grade interface
+primaryColor = "#1f77b4"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f0f2f6"
+textColor = "#262730"
+font = "sans serif"
+
+[server]
+# Server configuration
+headless = true
+enableCORS = false
+enableXsrfProtection = true
+
+[browser]
+# Browser configuration
+gatherUsageStats = false

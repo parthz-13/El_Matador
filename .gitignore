@@ -8,3 +8,4 @@ env/
 models/*.joblib
 *.joblib
 .kiro/.config.kiro
+.kiro
