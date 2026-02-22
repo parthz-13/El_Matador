@@ -1,0 +1,5 @@
+model_name: Passive Aggressive
+f1_score: 0.9667
+tfidf_max_features: 50000
+train_samples: 50496
+test_samples: 12625

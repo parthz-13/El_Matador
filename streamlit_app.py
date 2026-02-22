@@ -84,11 +84,11 @@ def load_analyzer() -> CredibilityAnalyzer:
         analyzer = CredibilityAnalyzer()
         return analyzer
     except FileNotFoundError as e:
-        st.error(f"❌ **Model Loading Error**: Required files not found - {str(e)}")
+        st.error(f"**Model Loading Error**: Required files not found - {str(e)}")
         st.error("Please ensure all backend components are properly installed.")
         raise
     except Exception as e:
-        st.error(f"❌ **Initialization Error**: Failed to load analyzer - {str(e)}")
+        st.error(f"**Initialization Error**: Failed to load analyzer - {str(e)}")
         st.error("Please check the application logs for more details.")
         raise
 
@@ -125,7 +125,7 @@ def load_model() -> Tuple[object, object]:
                 "  python train_model.py\n\n"
                 "This will create the required model files in the 'models/' directory."
             )
-            st.error(f"❌ **Model File Missing**\n\n{error_msg}")
+            st.error(f"**Model File Missing**\n\n{error_msg}")
             raise FileNotFoundError(error_msg)
         
         if not os.path.exists(vectorizer_path):
@@ -135,7 +135,7 @@ def load_model() -> Tuple[object, object]:
                 "  python train_model.py\n\n"
                 "This will create the required vectorizer file in the 'models/' directory."
             )
-            st.error(f"❌ **Vectorizer File Missing**\n\n{error_msg}")
+            st.error(f"**Vectorizer File Missing**\n\n{error_msg}")
             raise FileNotFoundError(error_msg)
         
         # Load model and vectorizer
@@ -156,7 +156,7 @@ def load_model() -> Tuple[object, object]:
             "3. Try retraining the model: python train_model.py\n"
             "4. Check file permissions"
         )
-        st.error(f"❌ **Model Loading Error**\n\n{error_msg}")
+        st.error(f"**Model Loading Error**\n\n{error_msg}")
         raise Exception(error_msg) from e
 
 
@@ -308,7 +308,7 @@ def render_input_panel() -> str:
     Returns:
         str: The article text entered by the user (empty string if no input)
     """
-    st.header("📝 Article Input")
+    st.header("Article Input")
     
     # Help text explaining input requirements
     st.markdown("""
@@ -351,17 +351,17 @@ def render_input_panel() -> str:
     # Display character count
     char_count = len(article_text)
     if char_count < UIConfig.MIN_TEXT_LENGTH:
-        st.caption(f"📊 Character count: {char_count} / {UIConfig.MIN_TEXT_LENGTH} minimum")
+        st.caption(f"Character count: {char_count} / {UIConfig.MIN_TEXT_LENGTH} minimum")
     elif char_count > UIConfig.MAX_TEXT_LENGTH:
-        st.caption(f"⚠️ Character count: {char_count} / {UIConfig.MAX_TEXT_LENGTH} maximum (exceeded)")
+        st.caption(f"Character count: {char_count} / {UIConfig.MAX_TEXT_LENGTH} maximum (exceeded)")
     else:
-        st.caption(f"✅ Character count: {char_count}")
+        st.caption(f"Character count: {char_count}")
     
     # Display validation warnings
     if char_count > 0:  # Only show warnings if user has entered text
         is_valid, error_message = validate_input(article_text)
         if not is_valid:
-            st.warning(f"⚠️ {error_message}")
+            st.warning(f"{error_message}")
     
     # Analyze button
     st.markdown("---")
@@ -370,7 +370,7 @@ def render_input_panel() -> str:
     is_analyzing = st.session_state.get("analyzing", False)
     
     analyze_button = st.button(
-        "🔍 Analyze Article",
+        "Analyze Article",
         type="primary",
         use_container_width=True,
         disabled=(char_count < UIConfig.MIN_TEXT_LENGTH or char_count > UIConfig.MAX_TEXT_LENGTH or is_analyzing)
@@ -402,7 +402,7 @@ def render_verdict_summary(result: Dict):
             Expected keys: classification, credibility_score, risk_level,
             confidence, analysis_summary
     """
-    st.subheader("🎯 Verdict Summary")
+    st.subheader("Verdict Summary")
     
     # Get values from result dictionary
     classification = result.get("classification", "UNVERIFIED")
@@ -504,7 +504,7 @@ def render_model_details(result: Dict):
         result: Analysis result dictionary from CredibilityAnalyzer.analyze()
             Expected keys: model_prediction, confidence, pattern_score, key_indicators
     """
-    with st.expander("🔬 Model Prediction Details", expanded=False):
+    with st.expander("Model Prediction Details", expanded=False):
         st.markdown("**Technical details for researchers and advanced users**")
         st.markdown("---")
         
@@ -609,7 +609,7 @@ def render_pattern_analysis(patterns: Dict):
             - extreme_adjectives: Count of extreme adjectives
             - clickbait: Count of clickbait patterns
     """
-    st.subheader("🔍 Linguistic Pattern Analysis")
+    st.subheader("Linguistic Pattern Analysis")
     st.markdown("Detailed breakdown of linguistic patterns detected in the article:")
     
     # Extract pattern values with defaults
@@ -713,7 +713,7 @@ def render_pattern_analysis(patterns: Dict):
     
     # Add interpretation note
     st.info(
-        "💡 **Interpretation Guide:** Higher counts and percentages indicate more suspicious patterns. "
+        "**Interpretation Guide:** Higher counts and percentages indicate more suspicious patterns. "
         "Credible journalism typically shows low values across all metrics, with balanced perspectives "
         "and evidence-based claims."
     )
@@ -736,7 +736,7 @@ def render_emotional_tone(emotional_tone: str):
             - "Sensationalized and attention-seeking"
             - "Highly emotional and manipulative"
     """
-    st.subheader("💭 Emotional Tone Analysis")
+    st.subheader("Emotional Tone Analysis")
     st.markdown("Assessment of emotional manipulation and sensationalism:")
     
     # Determine tone severity and color coding
@@ -747,7 +747,7 @@ def render_emotional_tone(emotional_tone: str):
         tone_color = UIConfig.COLOR_REAL
         severity_badge = "Low Concern"
         severity_color = UIConfig.COLOR_LOW_RISK
-        icon = "✅"
+        icon = ""
         context = (
             "The article maintains a neutral, analytical tone typical of credible journalism. "
             "This suggests the content focuses on facts and balanced reporting rather than "
@@ -758,7 +758,7 @@ def render_emotional_tone(emotional_tone: str):
         tone_color = UIConfig.COLOR_MEDIUM_RISK
         severity_badge = "Moderate Concern"
         severity_color = UIConfig.COLOR_MEDIUM_RISK
-        icon = "⚠️"
+        icon = ""
         context = (
             "The article shows some emotional language that may be used to influence reader reactions. "
             "While not necessarily problematic, this warrants attention to ensure the emotional content "
@@ -769,7 +769,7 @@ def render_emotional_tone(emotional_tone: str):
         tone_color = UIConfig.COLOR_FAKE
         severity_badge = "High Concern"
         severity_color = UIConfig.COLOR_HIGH_RISK
-        icon = "🚨"
+        icon = ""
         
         if "conspiratorial" in tone_lower:
             context = (
@@ -821,7 +821,7 @@ def render_emotional_tone(emotional_tone: str):
     st.markdown("<br>", unsafe_allow_html=True)
     
     # Add educational note about emotional manipulation
-    with st.expander("ℹ️ Understanding Emotional Manipulation in News"):
+    with st.expander("Understanding Emotional Manipulation in News"):
         st.markdown("""
         **Common Emotional Manipulation Tactics:**
         
@@ -858,7 +858,7 @@ def render_suspicious_claims(claims: List[str]):
         claims: List of suspicious claim strings from ClaimHighlighter
             Each claim is a sentence extracted from the article that requires fact-checking
     """
-    st.subheader("🚩 Suspicious Claims")
+    st.subheader("Suspicious Claims")
     st.markdown("Specific statements that require fact-checking and verification:")
     
     # Check if claims list is empty
@@ -868,7 +868,7 @@ def render_suspicious_claims(claims: List[str]):
             """
             <div style="padding: 20px; background-color: #d4edda; border-left: 5px solid #28a745; border-radius: 5px; margin-top: 10px;">
                 <span style="font-size: 1.1em; color: #155724;">
-                    ✅ <strong>No highly suspicious claims detected</strong>
+                    <strong>No highly suspicious claims detected</strong>
                 </span>
                 <br><br>
                 <span style="font-size: 0.95em; color: #155724;">
@@ -889,7 +889,7 @@ def render_suspicious_claims(claims: List[str]):
             """
             <div style="padding: 15px; background-color: #fff3cd; border-left: 5px solid #ffc107; border-radius: 5px; margin-bottom: 20px;">
                 <span style="font-size: 0.95em; color: #856404;">
-                    ⚠️ <strong>Why These Claims Are Flagged:</strong> The following statements contain 
+                    <strong>Why These Claims Are Flagged:</strong> The following statements contain 
                     unverified assertions, extraordinary claims, vague attributions, or statistical 
                     claims without clear sources. These require independent fact-checking before 
                     accepting as true.
@@ -921,12 +921,12 @@ def render_suspicious_claims(claims: List[str]):
         
         # Add note if there are more than 5 claims
         if len(claims) > 5:
-            st.caption(f"📝 Note: Showing 5 of {len(claims)} suspicious claims detected. The most significant claims are displayed above.")
+            st.caption(f"Note: Showing 5 of {len(claims)} suspicious claims detected. The most significant claims are displayed above.")
         
         st.markdown("<br>", unsafe_allow_html=True)
         
         # Add educational note about fact-checking
-        with st.expander("ℹ️ How to Fact-Check These Claims"):
+        with st.expander("How to Fact-Check These Claims"):
             st.markdown("""
             **Recommended Fact-Checking Steps:**
             
@@ -968,7 +968,7 @@ def render_explanation(result: Dict):
         result: Analysis result dictionary from CredibilityAnalyzer.analyze()
             Expected keys: explanation, recommended_action
     """
-    st.subheader("📋 Final Explanation & Recommendations")
+    st.subheader("Final Explanation & Recommendations")
     
     # Get values from result dictionary
     explanation = result.get("explanation", "No explanation available.")
@@ -992,15 +992,15 @@ def render_explanation(result: Dict):
     
     # Determine icon and color based on the content of recommended action
     if "high risk" in recommended_action.lower() or "extreme caution" in recommended_action.lower():
-        action_icon = "🚨"
+        action_icon = ""
         action_color = UIConfig.COLOR_HIGH_RISK
         action_bg_color = f"{UIConfig.COLOR_HIGH_RISK}15"
     elif "medium risk" in recommended_action.lower() or "caution" in recommended_action.lower():
-        action_icon = "⚠️"
+        action_icon = ""
         action_color = UIConfig.COLOR_MEDIUM_RISK
         action_bg_color = f"{UIConfig.COLOR_MEDIUM_RISK}15"
     else:
-        action_icon = "✅"
+        action_icon = ""
         action_color = UIConfig.COLOR_LOW_RISK
         action_bg_color = f"{UIConfig.COLOR_LOW_RISK}15"
     
@@ -1023,7 +1023,7 @@ def render_explanation(result: Dict):
     st.markdown(
         """
         <div style="padding: 15px; background-color: #e7f3ff; border-left: 4px solid #2196F3; border-radius: 5px;">
-            <strong>⚠️ Important Disclaimer:</strong>
+            <strong>Important Disclaimer:</strong>
             <br><br>
             This analysis is based on <strong>linguistic patterns and structural analysis only</strong>. 
             It does not perform external fact-checking, verify sources, or access real-time information. 
@@ -1050,10 +1050,10 @@ def render_sidebar():
     Requirements: 10.1, 10.2, 10.3, 19.1, 19.2, 19.3, 19.4
     """
     with st.sidebar:
-        st.header("ℹ️ Model Information")
+        st.header("Model Information")
         
         # Model Type
-        st.subheader("🤖 Model Architecture")
+        st.subheader("Model Architecture")
         st.markdown(
             f"""
             <div style="padding: 15px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6; margin-bottom: 15px;">
@@ -1081,7 +1081,7 @@ def render_sidebar():
         st.markdown("---")
         
         # Training Dataset Information
-        st.subheader("📚 Training Data")
+        st.subheader("Training Data")
         st.markdown(
             f"""
             <div style="padding: 15px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6; margin-bottom: 15px;">
@@ -1109,7 +1109,7 @@ def render_sidebar():
         st.markdown("---")
         
         # Performance Metrics
-        st.subheader("📊 Model Performance")
+        st.subheader("Model Performance")
         st.markdown("**Cross-Validation Metrics:**")
         
         # Create metrics table
@@ -1172,7 +1172,7 @@ def render_sidebar():
         st.markdown("---")
         
         # Model Version/Date
-        st.subheader("📅 Model Version")
+        st.subheader("Model Version")
         st.markdown(
             """
             <div style="padding: 15px; background-color: #e7f3ff; border-radius: 8px; border-left: 4px solid #2196F3; margin-bottom: 15px;">
@@ -1189,7 +1189,7 @@ def render_sidebar():
         st.markdown("---")
         
         # Model Documentation Reference
-        st.subheader("📖 Documentation")
+        st.subheader("Documentation")
         st.markdown(
             """
             <div style="padding: 15px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6; margin-bottom: 15px;">
@@ -1200,7 +1200,7 @@ def render_sidebar():
                 </div>
                 <div style="margin-top: 10px;">
                     <a href="https://github.com/yourusername/verifyai" target="_blank" style="color: #0066cc; text-decoration: none; font-weight: 500;">
-                        📄 View Full Documentation →
+                        View Full Documentation →
                     </a>
                 </div>
             </div>
@@ -1211,13 +1211,13 @@ def render_sidebar():
         st.markdown("---")
         
         # Disclaimers Section
-        st.subheader("⚠️ Important Disclaimers")
+        st.subheader("Important Disclaimers")
         
         # Disclaimer about probabilistic classification
         st.markdown(
             """
             <div style="padding: 12px; background-color: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107; margin-bottom: 12px;">
-                <div style="font-weight: bold; color: #856404; margin-bottom: 5px;">📊 Probabilistic Classification</div>
+                <div style="font-weight: bold; color: #856404; margin-bottom: 5px;">Probabilistic Classification</div>
                 <div style="font-size: 0.9em; color: #856404;">
                     This system provides probabilistic assessments based on statistical patterns, not definitive truth determinations. 
                     Results represent likelihood estimates and should be interpreted as one input among many in credibility evaluation.
@@ -1231,7 +1231,7 @@ def render_sidebar():
         st.markdown(
             """
             <div style="padding: 12px; background-color: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107; margin-bottom: 12px;">
-                <div style="font-weight: bold; color: #856404; margin-bottom: 5px;">🔍 No External Fact-Checking</div>
+                <div style="font-weight: bold; color: #856404; margin-bottom: 5px;">No External Fact-Checking</div>
                 <div style="font-size: 0.9em; color: #856404;">
                     This system does NOT perform external fact-checking, verify claims against authoritative sources, or access 
                     real-time information. Analysis is based solely on linguistic patterns and text characteristics within the 
@@ -1246,7 +1246,7 @@ def render_sidebar():
         st.markdown(
             """
             <div style="padding: 12px; background-color: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107; margin-bottom: 12px;">
-                <div style="font-weight: bold; color: #856404; margin-bottom: 5px;">👤 Human Verification Required</div>
+                <div style="font-weight: bold; color: #856404; margin-bottom: 5px;">Human Verification Required</div>
                 <div style="font-size: 0.9em; color: #856404;">
                     All results require human verification and critical thinking. This tool is designed to assist, not replace, 
                     human judgment. Always cross-reference suspicious claims with authoritative sources and professional fact-checkers 
@@ -1300,10 +1300,10 @@ def main():
     
     # Load models with spinner feedback
     try:
-        with st.spinner("🔄 Initializing models and analyzer..."):
+        with st.spinner("Initializing models and analyzer..."):
             analyzer = load_analyzer()
             model, vectorizer = load_model()
-        st.success("✅ Models loaded successfully!")
+        st.success("Models loaded successfully!")
     except (FileNotFoundError, Exception) as e:
         # Error messages are already displayed by the load functions
         st.stop()  # Stop execution if models fail to load
@@ -1317,7 +1317,7 @@ def main():
     
     # Render results in right column
     with col2:
-        st.header("📊 Analysis Results")
+        st.header("Analysis Results")
         
         # Check if analyze button was clicked
         if st.session_state.get("analyze_clicked", False):
@@ -1325,7 +1325,7 @@ def main():
             is_valid, error_message = validate_input(article_text)
             
             if not is_valid:
-                st.warning(f"⚠️ {error_message}")
+                st.warning(f"{error_message}")
                 st.session_state.analyze_clicked = False
             else:
                 # Clear previous results when new analysis is triggered (Requirement 18.3)
@@ -1346,10 +1346,10 @@ def main():
                         st.session_state.analyzed = True
                         
                         # Display success message when analysis completes
-                        st.success("✅ Analysis complete! Results are displayed below.")
+                        st.success("Analysis complete! Results are displayed below.")
                         
                     except Exception as e:
-                        st.error(f"❌ **Analysis Error**: {str(e)}")
+                        st.error(f"**Analysis Error**: {str(e)}")
                         st.error("Please try again or contact support if the issue persists.")
                         st.session_state.results = None
                         st.session_state.analyzed = False
@@ -1387,7 +1387,7 @@ def main():
             render_explanation(results)
             
         else:
-            st.info("👈 Enter an article in the input panel and click 'Analyze Article' to see results.")
+            st.info("Enter an article in the input panel and click 'Analyze Article' to see results.")
 
 
 if __name__ == "__main__":

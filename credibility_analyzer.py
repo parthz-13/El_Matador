@@ -154,22 +154,26 @@ class CredibilityAnalyzer:
         Returns:
             Credibility score as integer in range [0, 100]
         """
-        # Calculate base score from model prediction and confidence
+        # Model-driven component (0-100): reflects ML confidence in its prediction
         if model_prediction == 1:
-            # Model says credible
-            base_score = model_confidence * 100
+            model_component = model_confidence * 100
         else:
-            # Model says fake
-            base_score = (1 - model_confidence) * 100
-        
-        # Apply pattern penalty to adjust score
-        pattern_penalty = pattern_score * 30
-        adjusted_score = base_score - pattern_penalty
-        
-        # Clamp score to [0, 100] range
-        credibility_score = max(0, min(100, adjusted_score))
-        
-        return round(credibility_score)
+            # Fake prediction → lower score when model is more confident
+            model_component = (1 - model_confidence) * 100
+
+        # Pattern-driven component (0-100): inverted so high suspicion → low score
+        # pattern_score of 1.0 (very suspicious) → pattern_component of 0
+        # pattern_score of 0.0 (clean)           → pattern_component of 100
+        pattern_component = (1 - pattern_score) * 100
+
+        # Weighted blend: ML model carries 70% of the score, patterns 30%.
+        # This prevents keyword-based patterns from overriding a high-confidence
+        # model prediction (e.g., legitimate political/religious journalism
+        # that uses emotional language but is factually credible).
+        credibility_score = model_component * 0.70 + pattern_component * 0.30
+
+        # Clamp to [0, 100] range
+        return round(max(0, min(100, credibility_score)))
 
     def determine_risk_level(self, credibility_score: int) -> str:
         """
