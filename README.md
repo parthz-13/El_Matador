@@ -81,7 +81,14 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 4. Train the Model (First-Time Setup)
+### 4. Download the Dataset
+
+Download the WELFake dataset from Kaggle:
+- Link: https://www.kaggle.com/datasets/saurabhshahane/fake-news-classification
+- Place the downloaded `WELFake_Dataset.csv` file in the `dataset/` directory: `dataset/WELFake_Dataset.csv`
+- Note: This file is large (~150MB) and is excluded from version control via `.gitignore`
+
+### 5. Train the Model (First-Time Setup)
 
 If the `models/` directory is empty or no pre-trained model is present, run:
 
@@ -91,7 +98,7 @@ python train_model.py
 
 This will generate and save the ML model used for credibility analysis.
 
-### 5. Run the App
+### 6. Run the App
 
 ```bash
 streamlit run streamlit_app.py

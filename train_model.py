@@ -27,7 +27,7 @@ from sklearn.model_selection import train_test_split
 warnings.filterwarnings("ignore")
 
 # ── Configuration ────────────────────────────────────────────────────────────
-DATASET_PATH = os.path.join(os.path.dirname(__file__), "WELFake_Dataset.csv")
+DATASET_PATH = os.path.join(os.path.dirname(__file__), "dataset", "WELFake_Dataset.csv")
 MODEL_DIR = os.path.join(os.path.dirname(__file__), "models")
 TFIDF_MAX_FEATURES = 50_000
 TEST_SIZE = 0.20
